@@ -19,51 +19,18 @@ struct SupabaseAuthService {
             supabaseKey: Constants.projectAPIKey
         )
     }
-    func signUp(
-        email: String,
-        password: String
-    ) async throws -> User {
-        let response = try await client.auth.signUp(
-            email: email,
-            password: password
-        )
-        guard let email = response.user.email else {
-            print(
-                "No email provided"
-            )
-            throw NSError()
-        }
-        print(
-            response.user
-        )
-        
-        return User(
-            id: response.user.aud,
-            email: email
-        )
+    func signUp(email: String, password: String, username: String) async throws -> String {
+        let response = try await client.auth.signUp(email: email, password: password)
+        print(response.user)
+        let uid = response.user.id.uuidString
+        try await uploadUserData(with: uid, email: email, username: username)
+        return uid
     }
     
-    func signIn(
-        email: String,
-        password: String
-    ) async throws -> User {
-        let response = try await client.auth.signIn(
-            email: email,
-            password: password
-        )
-        
-        print(
-            response.user
-        )
-        guard let email = response.user.email else {
-            print("No email provided")
-            throw NSError()
-        }
-        
-        return User(
-            id: response.user.aud,
-            email: email
-        )
+    func signIn(email: String, password: String) async throws -> String {
+        let response = try await client.auth.signIn(email: email, password: password)
+        print(response.user)
+        return response.user.id.uuidString
     }
     
     func signOut() async throws {
@@ -71,14 +38,13 @@ struct SupabaseAuthService {
             .signOut()
     }
     
-    func getCurrentUser() async throws -> User? {
+    func getCurrentUserSession() async throws -> String? {
         let supabaseUser = try await client.auth.session.user
-        
-        guard let email = supabaseUser.email else {
-            print("DEBUG: No email")
-            throw NSError()
-        }
-        
-        return User(id: supabaseUser.aud, email: email)
+        return supabaseUser.id.uuidString
+    }
+    
+    private func uploadUserData(with uid: String, email: String, username: String) async throws {
+        let user = User(id: uid, email: email, username: username, createdAt: Date())
+        try await client.from("users").insert(user).execute()
     }
 }

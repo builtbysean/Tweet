@@ -12,20 +12,8 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if let currentUser = authManager.currentUser {
-                VStack {
-                    Text(currentUser.email)
-                        .padding()
-                    
-                    Button { Task { await authManager.signOut()} } label: {
-                        Text("Sign Out")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(width: 352, height: 44)
-                            .background(Color(.systemBlue))
-                            .cornerRadius(8)
-                    }
-                }
+            if let currentUserID = authManager.currentUserID {
+                UserProfileView()
             } else {
                 LoginView()
             }
