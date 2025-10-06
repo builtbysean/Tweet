@@ -23,7 +23,7 @@ struct LoginView: View {
                     .scaledToFit()
                     .frame(width: 100, height: 100)
                     .padding()
-                
+                    .padding(.bottom, 50)
                 VStack(spacing: 8) {
                     TextField("Enter your email", text: $email)
                         .autocapitalization(.none)
@@ -46,9 +46,10 @@ struct LoginView: View {
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
+                        .frame(height: 30)
+                        .background(.blue)
                         .cornerRadius(10)
+                        .padding(.horizontal, 24)
                 }
                 .disabled(!formIsValid)
                 .opacity(formIsValid ? 1.0 : 0.5)
@@ -58,17 +59,20 @@ struct LoginView: View {
                 
                 Divider()
                 
-                NavigationLink {
-                    RegistrationView()
-                        .navigationBarBackButtonHidden()
-                } label: {
-                    HStack(spacing: 3) {
-                        Text("Dont have an account?")
+                HStack(spacing: 6) {
+                    Text("Dont have an account?")
+                        .font(.callout)
+                    
+                    NavigationLink {
+                        RegistrationView()
+                            .navigationBarBackButtonHidden()
+                    } label: {
                         
                         Text("Sign up")
+                            .font(.callout)
                             .fontWeight(.semibold)
+                            .foregroundColor(.primary)
                     }
-                    .font(.subheadline)
                 }
                 .padding(.vertical, 16)
             }

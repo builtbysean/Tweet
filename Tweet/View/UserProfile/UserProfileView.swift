@@ -37,4 +37,5 @@ struct UserProfileView: View {
 
 #Preview {
     UserProfileView()
+        .environment(AuthManager())
 }
